@@ -1,12 +1,24 @@
-project: default
-source:
-  repoURL: 'https://github.com/davi2206/argocd-katas-training.git'
-  path: apps
-  targetRevision: HEAD
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: student-21
-syncPolicy:
-  automated:
-    prune: true
-    selfHeal: true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: student-21-jenkins
+  namespace: argocd
+spec:
+  project: default
+  sources:
+  - repoURL: 'https://charts.bitnami.com/bitnami'
+    targetRevision: 12.4.0
+    helm:
+      valueFiles:
+        - $values/jenkins/values.yaml
+    chart: jenkins
+  - repoURL: 'https://github.com/davi2206/argocd-katas-training.git'
+    targetRevision: main
+    ref: values
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: student-21
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
